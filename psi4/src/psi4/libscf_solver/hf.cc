@@ -691,6 +691,23 @@ void HF::form_H() {
     H_->copy(T_);
     H_->add(V_);
 
+    if (std::ifstream("newH.dat"))
+    {
+        outfile->Printf( " ===> Reading embedded core Hamiltonian <=== \n\n");
+        std::cout << "Reading embedded core Hamiltonian" << std::endl;
+        int nso = 0;
+        for(int h=0; h < nirrep_; h++) nso += nsopi_[h];
+        double H_elem;
+        FILE* input = fopen("newH.dat", "r");
+        for(int i=0; i < nso; i++) {
+            for (int j=0; j < nso; j++) {  
+            int statusvalue=fscanf(input, "%lf", &H_elem);
+            H_->set(i, j, H_elem); 
+            }
+        }
+        fclose(input);
+    }
+
     if (print_ > 3) H_->print("outfile");
 }
 
